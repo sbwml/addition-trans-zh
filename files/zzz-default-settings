@@ -25,10 +25,11 @@ sed -i 's,releases/21.02,snapshots,g' /etc/opkg/distfeeds.conf
 sed -i 's,downloads.openwrt.org,mirrors.cloud.tencent.com/lede,g' /etc/opkg/distfeeds.conf
 
 #uhttpd
-uci set uhttpd.main.rfc1918_filter=0
-uci set uhttpd.main.redirect_https=0
-uci commit uhttpd
-/etc/init.d/uhttpd restart
+#uci set uhttpd.main.rfc1918_filter=0
+#uci set uhttpd.main.redirect_https=0
+#uci commit uhttpd
+/etc/init.d/uhttpd stop
+/etc/init.d/uhttpd disable
 
 #firewall
 uci set firewall.@defaults[0].fullcone='1'
