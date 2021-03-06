@@ -31,6 +31,69 @@ sed -i 's,downloads.openwrt.org,mirrors.cloud.tencent.com/lede,g' /etc/opkg/dist
 /etc/init.d/uhttpd stop
 /etc/init.d/uhttpd disable
 
+#nginx
+rm /etc/nginx/uci.conf
+cat >/etc/nginx/nginx.conf <<"EOF"
+# This file is re-created when Nginx starts.
+# Consider using UCI or creating files in /etc/nginx/conf.d/ for configuration.
+# Parsing UCI configuration is skipped if uci set nginx.global.uci_enable=false
+# For details see: https://openwrt.org/docs/guide-user/services/webserver/nginx
+
+worker_processes auto;
+
+user root;
+
+error_log /dev/null;
+
+events {
+  worker_connections 1024;
+}
+
+http {
+    access_log off;
+    server_names_hash_bucket_size 64;
+    #log_format openwrt
+	#	'$request_method $scheme://$host$request_uri => $status'
+	#	' (${body_bytes_sent}B in ${request_time}s) <- $http_referer';
+
+    include mime.types;
+    default_type application/octet-stream;
+    sendfile on;
+
+    client_max_body_size 128M;
+    large_client_header_buffers 2 1k;
+
+    gzip on;
+    gzip_comp_level 6;
+    gzip_min_length 1k;
+    gzip_types text/plain text/css text/xml text/javascript text/x-component application/json application/javascript application/x-javascript application/xml application/xhtml+xml application/rss+xml application/atom+xml application/x-font-ttf application/vnd.ms-fontobject image/svg+xml image/x-icon font/opentype;
+    brotli on;
+    brotli_types text/plain text/css text/xml text/javascript text/x-component application/json application/javascript application/x-javascript application/xml application/xhtml+xml application/rss+xml application/atom+xml application/x-font-ttf application/vnd.ms-fontobject image/svg+xml image/x-icon font/opentype;
+    brotli_static on;
+    brotli_comp_level 6;
+    brotli_buffers 16 10k;
+    brotli_window 512k;
+    brotli_min_length 20;
+
+    root /www;
+
+    server {
+      listen 80 default_server;
+      listen [::]:80 default_server;
+      server_name _lan;
+      include restrict_locally;
+      include conf.d/*.locations;
+      access_log off; # logd openwrt;
+    }
+
+    include conf.d/*.conf;
+}
+EOF
+/etc/init.d/nginx restart
+/etc/init.d/nginx enabled
+#nginx end
+
+
 #firewall
 uci set firewall.@defaults[0].fullcone='1'
 uci commit firewall
