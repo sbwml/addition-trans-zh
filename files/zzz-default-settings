@@ -62,6 +62,7 @@ http {
 
     client_max_body_size 128M;
     large_client_header_buffers 2 1k;
+    keepalive_timeout 0s;
 
     gzip on;
     gzip_comp_level 6;
