@@ -24,6 +24,10 @@ sed -i 's/Master/openwrt-21.02 branch/g' /usr/lib/lua/luci/version.lua
 /etc/init.d/uhttpd stop
 /etc/init.d/uhttpd disable
 
+#uwsgi
+sed -i 's/^[^#].*luci-webui.socket*/#&/g' /etc/uwsgi/vassals/luci-webui.ini
+/etc/init.d/uwsgi restart
+
 #nginx
 rm /etc/nginx/uci.conf
 cat >/etc/nginx/nginx.conf <<"EOF"
