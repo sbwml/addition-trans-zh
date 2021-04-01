@@ -25,14 +25,6 @@ uci commit system
 sed -i 's,21.02,21.02-SNAPSHOT,g' /etc/opkg/distfeeds.conf
 sed -i 's,downloads.openwrt.org,mirror.sjtu.edu.cn/openwrt,g' /etc/opkg/distfeeds.conf
 
-#disable uhttpd
-/etc/init.d/uhttpd stop
-/etc/init.d/uhttpd disable
-
-#uwsgi
-sed -i 's/^[^#].*luci-webui.socket*/#&/g' /etc/uwsgi/vassals/luci-webui.ini
-/etc/init.d/uwsgi restart
-
 #nginx
 rm /etc/nginx/uci.conf
 cat >/etc/nginx/nginx.conf <<"EOF"
