@@ -8,6 +8,19 @@ uci set system.@system[0].timezone=CST-8
 uci set system.@system[0].zonename=Asia/Shanghai
 uci commit system
 
+#ntp server
+uci del system.ntp.enabled
+uci del system.ntp.enable_server
+uci set system.cfg01e48a.log_proto='udp'
+uci set system.cfg01e48a.conloglevel='8'
+uci set system.cfg01e48a.cronloglevel='5'
+uci del system.ntp.server
+uci add_list system.ntp.server='ntp1.aliyun.com'
+uci add_list system.ntp.server='ntp2.aliyun.com'
+uci add_list system.ntp.server='ntp3.aliyun.com'
+uci add_list system.ntp.server='ntp4.aliyun.com'
+uci commit system
+
 #feed
 sed -i 's,21.02,21.02-SNAPSHOT,g' /etc/opkg/distfeeds.conf
 sed -i 's,downloads.openwrt.org,mirror.sjtu.edu.cn/openwrt,g' /etc/opkg/distfeeds.conf
